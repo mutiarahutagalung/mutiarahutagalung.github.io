@@ -1,29 +1,46 @@
-AOS.init({
-  easing: "ease-out-back",
-});
-
-if (document.readyState == "complete") {
-  AOS.refresh();
-}
-
-
 document.addEventListener("DOMContentLoaded", function () {
-  document.body.style.overflow = "hidden";
+  AOS.init();
 
-  var audio = document.getElementById("myAudio");
-  var playButton = document.getElementById("playButton");
+  const home = document.querySelector("#home");
+  if (home) {
+    home.scrollIntoView({ behavior: "smooth" });
+  }
 
-  playButton.addEventListener("click", function () {
-    if (audio.paused) {
+  const openInvitation = localStorage.getItem("openInvitation");
+  if (openInvitation === null) {
+    localStorage.setItem("openInvitation", "false");
+  }
+
+  const btnOpenInvitation = document.querySelector("#btnOpenInvitation");
+  if (btnOpenInvitation) {
+    if (openInvitation === "true") {
       document.body.style.overflow = "auto";
-      playButton.style.display = "none";
-
-      var gallery = document.getElementById('gallery');
-      gallery.scrollIntoView({ behavior: 'smooth' });
-
-      audio.play();
+      btnOpenInvitation.style.display = "none";
     } else {
-      audio.pause();
+      document.body.style.overflow = "hidden";
+      btnOpenInvitation.style.display = "block";
     }
+
+    btnOpenInvitation.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      localStorage.setItem("openInvitation", "true");
+      document.body.style.overflow = "auto";
+      btnOpenInvitation.style.display = "none";
+
+      const gallery = document.querySelector("#gallery");
+      if (gallery) {
+        gallery.scrollIntoView({ behavior: "smooth" });
+      }
+
+      const audio = document.querySelector("#audio");
+      if (audio) {
+        audio.play();
+      }
+    });
+  }
+
+  window.addEventListener("beforeunload", function () {
+    localStorage.clear();
   });
 });
